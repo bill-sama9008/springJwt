@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  # Nombre del servicio
+  authDB:
+    # Imagen de postgres
+    image: postgres:13.10
+    # Nombre del contenedor
+    container_name: my_spring_db
+    # Reiniciar contenedor
+    restart: always
+    # Puertos
+    ports:
+      - 5434:5432
+    # Variables de entorno
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=dbAuth
+    # Bind volumes:
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+  pgAdmin:
+    # Imagen de pgAdmin
+    image: dpage/pgadmin4
+    # Nombe del contenedor
+    container_name: pgadmin4_spring
+    # Reiniciar contenedor
+    restart: always
+    # Depende de la base de datos de postgres
+    depends_on:
+      - authDB
+    # Puertos
+    ports:
+      - 4040:80
+    # Variables de entorno
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=auth@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=123456
+    # bin volumes
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+      - ./pgadmin:/certs/server.cert
+      - ./pgadmin:/certs/server.key
+      - ./pgadmin:/pgadmin4/servers.json
